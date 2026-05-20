@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="
+        http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+    <!-- bean definitions here -->
+
+	<bean id="myBean" class="com.practice.bean.MyBean">
+		<!-- property definitions here -->
+		<property name="name" value="This is new born bean"/>
+	</bean>
+
+	<bean id="specificationBean" class="com.demo.mobile.Specification">
+		<!-- property definitions here -->
+		<property name="model" value="Iphone 16"/>
+		<property name="manufacturer" value="Apple"/>
+	</bean>
+
+	<bean id="phoneBean" class="com.demo.mobile.PhoneBean">
+		<property name="name" value="Apple Phone Bean"/>
+		<constructor-arg ref="specificationBean"/>
+	</bean>
+
+	<bean id="userDetailsProviderBean" class="coupling.loosely.Provider.UserDataBaseProviderImpl">
+	</bean>
+
+	<bean id="employeeDetailsProviderBean" class="coupling.loosely.Provider.EmployeeDataBaseProviderImpl">
+	</bean>
+
+	<bean id="userDetailBean" class="coupling.loosely.DatabaseService.DetailsService">
+		<constructor-arg name="dataBaseProvider" ref="userDetailsProviderBean"/>
+	</bean>
+
+	<bean id="employeeDetailBean" class="coupling.loosely.DatabaseService.DetailsService">
+		<constructor-arg name="dataBaseProvider" ref="employeeDetailsProviderBean"/>
+	</bean>
+
+</beans>
