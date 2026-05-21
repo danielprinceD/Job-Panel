@@ -14,4 +14,5 @@ public interface JobService
 	Map addJob(Map jobDetail);
 	Map updateJob(String jobId , Map jobDetail);
 	Map addAttachemntByJobId(String jobId , MultipartFile filePath);
+	List searchJobByTitle(String keyword);
 }

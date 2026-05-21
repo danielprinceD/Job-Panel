@@ -97,4 +97,16 @@ public class JobServiceImpl implements JobService
 		}
 	}
 
+	@Override
+	public List searchJobByTitle(String keyword)
+	{
+		try{
+			List<Job> jobs = jobRepository.findByKeyword(keyword);
+			return jobs;
+		}
+		catch(ResponseStatusException e){
+			throw new ResponseStatusException(HttpStatus.BAD_REQUEST , "An Error Occurred While Searching for Jobs");
+		}
+	}
+
 }

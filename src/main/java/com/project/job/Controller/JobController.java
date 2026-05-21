@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
@@ -84,6 +85,19 @@ public class JobController
 			return ResponseEntity.internalServerError().body(Map.of("message" , e.getReason()));
 		}
 		return ResponseEntity.ok(Map.of("message" , "Attachment Added Successfully"));
+	}
+
+	@GetMapping("/search/jobs")
+	public ResponseEntity searchJobs( @RequestParam("text") String keyword)
+	{
+		try{
+			List resultData = jobService.searchJobByTitle(keyword);
+			return ResponseEntity.ok(Map.of( "message" , "Data Fetched Successfully" , "data" , resultData ));
+		}
+		catch(ResponseStatusException e)
+		{
+			return ResponseEntity.status(e.getStatusCode()).body(Map.of("message", e.getReason()));
+		}
 	}
 
 
