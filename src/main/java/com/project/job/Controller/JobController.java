@@ -2,9 +2,12 @@ package com.project.job.Controller;
 
 import tools.jackson.databind.ObjectMapper;
 
+import java.io.File;
 import java.util.List;
 import java.util.Map;
 
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -12,7 +15,10 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.multipart.MultipartRequest;
 import org.springframework.web.server.ResponseStatusException;
 
 import com.project.job.Service.JobService;
@@ -68,5 +74,17 @@ public class JobController
 		}
 		return ResponseEntity.ok(updatedResultData);
 	}
+
+	@PostMapping("/jobs/{id}/attachment")
+	public ResponseEntity<?> addJobImageById( @PathVariable("id") String jobId , @RequestPart("attachment") MultipartFile file){
+//		Map requestJson = new ObjectMapper().convertValue( data , Map.class);
+		try {
+			jobService.addAttachemntByJobId( jobId , file);
+		}catch(ResponseStatusException  e){
+			return ResponseEntity.internalServerError().body(Map.of("message" , e.getReason()));
+		}
+		return ResponseEntity.ok(Map.of("message" , "Attachment Added Successfully"));
+	}
+
 
 }

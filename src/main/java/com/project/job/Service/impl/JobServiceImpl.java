@@ -10,6 +10,7 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
 
 import com.project.job.Repository.JobRepository;
@@ -63,6 +64,37 @@ public class JobServiceImpl implements JobService
 			jobRepository.save(updatedJob);
 		}
 		return new ObjectMapper().convertValue( updatedJob , Map.class);
+	}
+
+	public void validateFile(MultipartFile file) throws ResponseStatusException
+	{
+		if(file.isEmpty()){
+			throw new ResponseStatusException(HttpStatus.BAD_REQUEST , "File is Empty");
+		}
+		if(file.getSize() > 5 * 1024 * 1024){
+			throw new ResponseStatusException(HttpStatus.BAD_REQUEST , "File Size Exceeds Limit of 5MB");
+		}
+	}
+
+	@Override
+	public Map addAttachemntByJobId(String jobId, MultipartFile file)
+	{
+		try {
+			validateFile(file);
+			Job job = jobRepository.findById(Long.valueOf(jobId)).orElseThrow(
+				()->new ResponseStatusException(HttpStatus.NOT_FOUND , "Job Not Found")
+			);
+
+			job.setAttachment(file.getBytes());
+			jobRepository.save(job);
+			return Map.of("message" , "File Uploaded Successfully");
+		}
+		catch(ResponseStatusException e){
+			throw new ResponseStatusException(HttpStatus.BAD_REQUEST , e.getReason());
+		}
+		catch(Exception e){
+			throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR , "An Error Occurred While Uploading File");
+		}
 	}
 
 }

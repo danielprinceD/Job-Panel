@@ -4,6 +4,7 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.Lob;
 
 @Entity
 public class Job
@@ -17,6 +18,19 @@ public class Job
 	private String location;
 	private Integer workingHours;
 	private String modeOfWork;
+	@Lob
+	private byte[] attachment;
+
+	public byte[] getAttachment() {
+		return attachment;
+	}
+	public void setAttachment(byte[] attachment) {
+		this.attachment = attachment;
+	}
+
+	public Long getJobId(){
+		return jobId;
+	}
 
 	public void setJobId(Long jobId){
 		this.jobId = jobId;
