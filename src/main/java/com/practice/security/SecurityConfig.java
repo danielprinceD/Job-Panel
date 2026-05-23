@@ -17,14 +17,28 @@ import org.springframework.security.web.SecurityFilterChain;
 @EnableWebSecurity
 public class SecurityConfig
 {
+
+	private static final String[] excludeString =  {
+		"/h2-console/**"
+	};
+
 	@Bean
 	public SecurityFilterChain _webSecurityFilter(HttpSecurity http) throws Exception
 	{
 		System.out.println("SecurityFilterChain Bean Created");
-		http.authorizeHttpRequests((request)->request.anyRequest().authenticated());
+		http.authorizeHttpRequests(
+			(request)->request
+				.requestMatchers(excludeString).permitAll()
+				.anyRequest().authenticated()
+		);
 		http.formLogin((Customizer.withDefaults()));
 		http.httpBasic(Customizer.withDefaults());
 		http.csrf((customize)->customize.disable());
+		http.headers(
+			header->header.frameOptions(
+				frameOption->frameOption.sameOrigin()
+			)
+		);
 		return http.build();
 	}
 
@@ -41,5 +55,6 @@ public class SecurityConfig
 		UserDetails user2 = User.withUsername("admin1").password(passwordEncoder().encode("admin1")).roles("ADMIN").build();
 		return new InMemoryUserDetailsManager(user1 , user2);
 	}
+
 
 }
