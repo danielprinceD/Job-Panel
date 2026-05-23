@@ -12,6 +12,8 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.provisioning.JdbcUserDetailsManager;
 import org.springframework.security.provisioning.UserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
@@ -46,9 +48,14 @@ public class SecurityConfig
 	}
 
 	@Bean
+	public PasswordEncoder passwordEncoder(){
+		return new BCryptPasswordEncoder();
+	}
+
+	@Bean
 	public UserDetailsService userDetailsService(){
-		UserDetails admin = User.withUsername("admin").password("{noop}admin").roles("ADMIN").build();
-		UserDetails user = User.withUsername("user").password("{noop}user").roles("USER").build();
+		UserDetails admin = User.withUsername("admin").password(passwordEncoder().encode("admin")).roles("ADMIN").build();
+		UserDetails user = User.withUsername("user").password(passwordEncoder().encode("user")).roles("USER").build();
 		UserDetailsManager userDetailsManager = new JdbcUserDetailsManager(dataSource);
 		userDetailsManager.createUser(admin);
 		userDetailsManager.createUser(user);
