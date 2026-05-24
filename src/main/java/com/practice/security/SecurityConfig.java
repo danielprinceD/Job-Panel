@@ -55,7 +55,7 @@ public class SecurityConfig
 				.requestMatchers(excludeString).permitAll()
 				.anyRequest().authenticated()
 		);
-		http.formLogin((Customizer.withDefaults()));
+//		http.formLogin((Customizer.withDefaults()));
 		http.httpBasic(Customizer.withDefaults());
 		http.csrf((customize)->customize.disable());
 		http.headers(
@@ -63,7 +63,7 @@ public class SecurityConfig
 				frameOption->frameOption.sameOrigin()
 			)
 		);
-		http.oauth2Login(form->form.defaultSuccessUrl("/hello"));
+		http.oauth2Login(configurer->configurer.defaultSuccessUrl("/hello"));
 //		http.exceptionHandling(
 //			exception->exception.authenticationEntryPoint(authEntryPointJwt)
 //		);
