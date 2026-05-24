@@ -63,10 +63,11 @@ public class SecurityConfig
 				frameOption->frameOption.sameOrigin()
 			)
 		);
-		http.exceptionHandling(
-			exception->exception.authenticationEntryPoint(authEntryPointJwt)
-		);
-		http.addFilterBefore(authTokenFilter() , UsernamePasswordAuthenticationFilter.class);
+		http.oauth2Login(form->form.defaultSuccessUrl("/hello"));
+//		http.exceptionHandling(
+//			exception->exception.authenticationEntryPoint(authEntryPointJwt)
+//		);
+//		http.addFilterBefore(authTokenFilter() , UsernamePasswordAuthenticationFilter.class);
 		return http.build();
 	}
 
