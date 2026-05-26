@@ -16,6 +16,8 @@ import com.practice.entity.service.UserService;
 @Service
 public class UserServiceImpl implements UserService
 {
+	@Autowired
+	private ObjectMapper objectMapper;
 
 	@Autowired
 	private UserRepository userRepository;
@@ -25,27 +27,25 @@ public class UserServiceImpl implements UserService
 		return userRepository.findAll();
 	}
 
-	@Override public Map getUserByID(String userID)
+	@Override public Users getUserByID(String userID)
 	{
 
 		try {
 			Long id = Long.valueOf(userID);
 			Users user = userRepository.findById(id).orElseThrow();
-			return new ObjectMapper().convertValue(user , Map.class);
+			return user;
 		}
 		catch(Exception e)
 		{
-			return Map.of();
+			return null;
 		}
 	}
 
-	@Override public boolean addUser(Map user)
+	@Override public boolean addUser(Users user)
 	{
 		try
 		{
-			Users users = new ObjectMapper().convertValue(user , Users.class);
-			System.out.println( user +  " " + users);
-			userRepository.save(users);
+			userRepository.save(user);
 			return true;
 		}
 		catch(Exception e)
@@ -54,11 +54,11 @@ public class UserServiceImpl implements UserService
 			}
 	}
 
-	@Override public boolean updateUser(String userId, Map user)
+	@Override public boolean updateUser(String userId, Users user)
 	{
 		try
 		{
-			Users users = new ObjectMapper().convertValue(user , Users.class);
+			Users users = objectMapper.convertValue(user , Users.class);
 			users.setUserID(Long.valueOf(userId));
 			userRepository.save(users);
 			return true;
