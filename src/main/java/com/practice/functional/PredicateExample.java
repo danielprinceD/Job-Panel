@@ -45,7 +45,7 @@ public class PredicateExample
 		Predicate<Person> isVerified = person -> person.isVerified;
 
 		List<Person> verifiedAdults = Verifier.verify(isAdult.and(isVerified) , people );
-
 		verifiedAdults.forEach(person -> System.out.println(person.name + " is a verified adult."));
+
 	}
 }
