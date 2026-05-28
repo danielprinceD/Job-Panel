@@ -1,22 +1,17 @@
-package com.project.job.pojo;
+package com.project.job.dto.request;
 
-import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.Lob;
 import lombok.Data;
+
+import org.springframework.stereotype.Service;
 
 import com.project.job.pojo.enums.JOB_STATUS;
 
-@Entity
 @Data
-public class Job
+@Service
+public class JobRequest
 {
-	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long jobId;
 	private String jobTitle;
 	private String jobDescription;
@@ -24,9 +19,5 @@ public class Job
 	private String location;
 	private Integer workingHours;
 	private String modeOfWork;
-	@Enumerated(EnumType.STRING)
 	private JOB_STATUS jobStatus;
-
-	@Lob
-	private byte[] attachment;
 }

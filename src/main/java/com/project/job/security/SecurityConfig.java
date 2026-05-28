@@ -18,6 +18,8 @@ import org.springframework.security.provisioning.JdbcUserDetailsManager;
 import org.springframework.security.provisioning.UserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
 
+import com.project.job.pojo.Job;
+
 @Configuration
 @EnableWebSecurity
 @EnableMethodSecurity
@@ -28,7 +30,7 @@ public class SecurityConfig
 	DataSource dataSource;
 
 	public static final String[] exclueList = {
-		"/h2-console/**",
+		"/h2-console/**", "/**"
 	};
 
 	@Bean
@@ -59,6 +61,7 @@ public class SecurityConfig
 		UserDetailsManager userDetailsManager = new JdbcUserDetailsManager(dataSource);
 		userDetailsManager.createUser(admin);
 		userDetailsManager.createUser(user);
+
 		return userDetailsManager;
 	}
 }

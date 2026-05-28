@@ -1,0 +1,37 @@
+package com.project.job.pojo;
+
+import jakarta.persistence.CascadeType;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jdk.jfr.Timestamp;
+import lombok.Data;
+
+import java.time.LocalDateTime;
+import java.util.List;
+
+import org.hibernate.annotations.CreationTimestamp;
+
+@Data
+@Entity
+public class EnrollmentTable
+{
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	private Long enrollmentId;
+
+	@ManyToOne( cascade = CascadeType.ALL  )
+	@JoinColumn( name = "applicant_id" , referencedColumnName = "applicantId")
+	private List<ApplicantTable> applicants;
+
+	@ManyToOne( cascade = CascadeType.ALL )
+	@JoinColumn( name = "job_id" , referencedColumnName = "jobId")
+	private List<Job> jobs;
+
+	@CreationTimestamp
+	private LocalDateTime createdAt;
+
+}
