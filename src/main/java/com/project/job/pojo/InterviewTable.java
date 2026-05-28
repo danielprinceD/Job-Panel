@@ -23,7 +23,7 @@ public class InterviewTable
 
 	@ManyToOne(cascade = CascadeType.ALL)
 	@JoinColumn( name = "enrollment_id" , referencedColumnName = "enrollmentId")
-	private List<EnrollmentTable> enrollmentId;
+	private List<EnrollmentTable> enrollments;
 
 	private String interviewLocation;
 	private LocalDateTime interviewDateTime;
