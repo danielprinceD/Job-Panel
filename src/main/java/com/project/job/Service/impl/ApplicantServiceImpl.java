@@ -6,7 +6,9 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.ErrorResponseException;
 import org.springframework.web.server.ResponseStatusException;
+import org.springframework.web.server.ServerErrorException;
 
 import com.project.job.Repository.ApplicantRepository;
 import com.project.job.Service.ApplicantService;
@@ -21,9 +23,26 @@ public class ApplicantServiceImpl implements ApplicantService
 {
 	@Autowired private ApplicantRepository applicantRepository;
 
-	ApplicantValidator applicantValidator = ApplicantValidator.isApplicantEmailValid()
-		.and(ApplicantValidator.isApplicantNameValid())
-		.and(ApplicantValidator.isApplicantPhoneValid());
+
+
+
+	public void validateApplicant(ApplicantTable applicantTable) throws Exception
+	{
+
+		ApplicantValidator applicantValidator = ApplicantValidator.isApplicantEmailValid()
+			.and(ApplicantValidator.isApplicantNameValid())
+			.and(ApplicantValidator.isApplicantPhoneValid());
+
+		ApplicantValidator.ApplicantValidationResult result = applicantValidator.apply(applicantTable);
+		if( result != ApplicantValidator.ApplicantValidationResult.SUCCESS ){
+			throw new ErrorResponseException( HttpStatus.BAD_REQUEST , new Throwable(){
+				@Override public String getMessage()
+				{
+					return "Invalid applicant data: " + result.name();
+				}
+			});
+		}
+	}
 
 	@Override public ApplicantResponse getApplicantById(Long applicantId)
 	{
@@ -39,11 +58,7 @@ public class ApplicantServiceImpl implements ApplicantService
 	@Override public ApplicantResponse addApplicant(ApplicantRequest applicant) throws Exception
 	{
 		ApplicantTable applicantTable = ApplicantMapper.toApplicantTable(applicant);
-		ApplicantValidator.ApplicantValidationResult result = applicantValidator.apply(applicantTable);
-
-		if( result != ApplicantValidator.ApplicantValidationResult.SUCCESS ){
-			throw new Exception("Invalid applicant data: " + result.name());
-		}
+		validateApplicant(applicantTable);
 		applicantTable = applicantRepository.save(applicantTable);
 		return ApplicantMapper.toApplicantResponse(applicantTable);
 	}
@@ -51,10 +66,7 @@ public class ApplicantServiceImpl implements ApplicantService
 	@Override public ApplicantResponse updateApplicant(Long applicantId, ApplicantRequest applicant) throws Exception
 	{
 		ApplicantTable applicantTable = ApplicantMapper.toApplicantTable(applicant);
-		ApplicantValidator.ApplicantValidationResult result = applicantValidator.apply(applicantTable);
-		if( result != ApplicantValidator.ApplicantValidationResult.SUCCESS ){
-			throw new Exception("Invalid applicant data: " + result.name());
-		}
+		validateApplicant(applicantTable);
 		applicantTable.setApplicantId(applicantId);
 		applicantTable = applicantRepository.save(applicantTable);
 		return ApplicantMapper.toApplicantResponse(applicantTable);
