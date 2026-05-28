@@ -1,5 +1,7 @@
 package com.project.job.Controller;
 
+import java.util.Map;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -34,10 +36,17 @@ public class ApplicantController
 	}
 
 	@PostMapping("/applicants")
-	public ResponseEntity<ApplicantResponse> addApplicant(@RequestBody ApplicantRequest applicant) throws Exception
+	public ResponseEntity<?> addApplicant(@RequestBody ApplicantRequest applicant) throws Exception
 	{
-		ApplicantResponse response = service.addApplicant(applicant);
-		return response == null ? ResponseEntity.badRequest().build() : ResponseEntity.ok(response);
+		try{
+			ApplicantResponse response = service.addApplicant(applicant);
+			return response == null ? ResponseEntity.badRequest().build() : ResponseEntity.ok(response);
+		}
+		catch(Exception e){
+			return ResponseEntity.badRequest().body(Map.of(
+				"error", e.getMessage()
+			));
+		}
 	}
 
 }

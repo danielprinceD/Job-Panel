@@ -33,6 +33,7 @@ public interface ApplicantValidator extends Function<ApplicantTable , ApplicantV
 
 	default ApplicantValidator and(ApplicantValidator other)
 	{
+
 		return applicant -> {
 			ApplicantValidationResult result = this.apply(applicant);
 			return result.equals(ApplicantValidationResult.SUCCESS) ? other.apply(applicant) : result;

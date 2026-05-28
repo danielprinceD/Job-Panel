@@ -9,7 +9,7 @@ public interface ApplicantService
 {
 	ApplicantResponse getApplicantById(Long applicantId);
 	List<ApplicantResponse> getAllApplicants();
-	ApplicantResponse addApplicant(ApplicantRequest applicant);
-	ApplicantResponse updateApplicant(Long applicantId, ApplicantRequest applicant);
+	ApplicantResponse addApplicant(ApplicantRequest applicant) throws Exception;
+	ApplicantResponse updateApplicant(Long applicantId, ApplicantRequest applicant) throws Exception;
 	boolean deleteApplicant(Long applicantId);
 }
