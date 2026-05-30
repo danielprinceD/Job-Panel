@@ -1,5 +1,9 @@
 package com.project.job.Controller;
 
+import lombok.extern.slf4j.Slf4j;
+
+import java.util.Map;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.ErrorResponseException;
@@ -9,11 +13,12 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.server.ResponseStatusException;
 
 import com.project.job.Service.EntrollmentService;
 import com.project.job.dto.response.EnrollmentResponse;
 
-@RequestMapping("/api/v1")
+@Slf4j @RequestMapping("/api/v1")
 @RestController
 public class EnrollmentController
 {
@@ -29,15 +34,18 @@ public class EnrollmentController
 				enrollmentResponse
 			);
 		}
-		catch(ErrorResponseException e){
-			return ResponseEntity.status(e.getStatusCode()).body(e.getMessage());
+		catch(ResponseStatusException e){
+			return ResponseEntity.badRequest().body(Map.of(
+				"code" , e.getStatusCode().value(),
+				"error", e.getReason()
+			));
 		}
 		catch(Exception e){
 			return ResponseEntity.status(500).body("An unexpected error occurred: " + e.getMessage());
 		}
 	}
 
-	@GetMapping("/entrolls/{enrollment_id}")
+	@GetMapping("/enrolls/{enrollment_id}")
 	public ResponseEntity<?> getEnrollmentById( @PathVariable("enrollment_id") Long enrollmentId)
 	{
 		try {

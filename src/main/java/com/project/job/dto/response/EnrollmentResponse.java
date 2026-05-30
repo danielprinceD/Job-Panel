@@ -11,6 +11,6 @@ import org.springframework.stereotype.Service;
 public class EnrollmentResponse
 {
 	public Long enrollmentId;
-	public List<ApplicantResponse> applicantResponses;
-	public List<JobResponse> jobResponses;
+	public ApplicantResponse applicantResponses;
+	public JobResponse jobResponses;
 }

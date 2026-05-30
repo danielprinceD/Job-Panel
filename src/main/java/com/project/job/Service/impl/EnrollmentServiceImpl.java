@@ -9,6 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 import org.springframework.web.ErrorResponseException;
+import org.springframework.web.server.ResponseStatusException;
 
 import com.project.job.Repository.ApplicantRepository;
 import com.project.job.Repository.EnrollmentRepository;
@@ -17,8 +18,9 @@ import com.project.job.Service.EntrollmentService;
 import com.project.job.dto.mapper.EnrollmentMapper;
 import com.project.job.dto.request.EnrollmentRequest;
 import com.project.job.dto.response.EnrollmentResponse;
+import com.project.job.pojo.ApplicantTable;
 import com.project.job.pojo.EnrollmentTable;
-
+import com.project.job.pojo.Job;
 
 @Component
 public class EnrollmentServiceImpl implements EntrollmentService
@@ -38,24 +40,19 @@ public class EnrollmentServiceImpl implements EntrollmentService
 
 	@Override public EnrollmentResponse enrollApplicantToJob(Long applicantId, Long jobId)
 	{
-		if(applicantRepository.findById(applicantId).isEmpty()){
-			throw new ErrorResponseException(HttpStatus.BAD_REQUEST , new Throwable(){
-				@Override public String getMessage()
-				{
-					return "Applicant with id " + applicantId + " not found.";
-				}
-			});
+		ApplicantTable applicantTable = applicantRepository.findById(applicantId).orElse(null);
+		Job job = jobRepository.findById(jobId).orElse(null);
+		if(applicantTable == null){
+			throw new ResponseStatusException(HttpStatus.BAD_REQUEST , "Applicant with id " + applicantId + " not found.");
 		}
-		if(!jobRepository.findById(jobId).isEmpty()){
-			throw new ErrorResponseException(HttpStatus.BAD_REQUEST , new Throwable(){
-				@Override public String getMessage()
-				{
-					return "Job with id " + jobId + " not found.";
-				}
-			});
+		if(job == null){
+			throw new ResponseStatusException(HttpStatus.BAD_REQUEST , "Job with id " + jobId + " not found.");
 		}
-		int responseID = enrollmentRepository.saveByApplicantIdAndJobId(applicantId, jobId);
-		if( responseID == -1 ){
+		EnrollmentTable enrollmentTable = new EnrollmentTable();
+		enrollmentTable.setApplicants(applicantTable);
+		enrollmentTable.setJobs(job);
+		enrollmentTable = enrollmentRepository.save(enrollmentTable);
+		if( enrollmentTable == null || enrollmentTable.getEnrollmentId() == null){
 			throw new ErrorResponseException(HttpStatus.INTERNAL_SERVER_ERROR , new Throwable(){
 				@Override public String getMessage()
 				{
@@ -64,7 +61,7 @@ public class EnrollmentServiceImpl implements EntrollmentService
 			});
 		}
 
-		return EnrollmentMapper.toEnrollmentResponse(enrollmentRepository.findById(Long.valueOf(responseID)).get());
+		return EnrollmentMapper.toEnrollmentResponse(enrollmentTable);
 	}
 
 	@Override public List<EnrollmentResponse> getAllEnrollmentsByJobId(Long jobId)
