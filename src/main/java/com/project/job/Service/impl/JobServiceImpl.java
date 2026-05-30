@@ -15,6 +15,8 @@ import org.springframework.web.server.ResponseStatusException;
 
 import com.project.job.Repository.JobRepository;
 import com.project.job.Service.JobService;
+import com.project.job.dto.mapper.JobMapper;
+import com.project.job.dto.response.JobResponse;
 import com.project.job.pojo.Job;
 
 @Service
@@ -35,9 +37,9 @@ public class JobServiceImpl implements JobService
 	}
 
 	@Override
-	public List getAllJobs()
+	public List<JobResponse> getAllJobs()
 	{
-		return new ObjectMapper().convertValue( jobRepository.findAll() , List.class);
+		return jobRepository.findAll().stream().map(JobMapper::toJobResponse).toList();
 	}
 
 	@Override

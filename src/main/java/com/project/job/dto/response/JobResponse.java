@@ -4,10 +4,12 @@ import lombok.Data;
 
 import org.springframework.stereotype.Service;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.project.job.pojo.enums.JOB_STATUS;
 
 @Data
 @Service
+@JsonInclude(JsonInclude.Include.NON_EMPTY)
 public class JobResponse
 {
 	private Long jobId;
