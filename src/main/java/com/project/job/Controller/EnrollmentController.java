@@ -70,4 +70,21 @@ public class EnrollmentController
 			return ResponseEntity.status(500).body("An unexpected error occurred: " + e.getMessage());
 		}
 	}
+
+	@GetMapping("/enrolls/applicants/{applicant_id}")
+	public ResponseEntity<?> getAllEnrollmentsByApplicantId( @PathVariable("applicant_id") Long applicantId)
+	{
+		try {
+			return ResponseEntity.ok(
+				entrollmentService.getAllEnrollmentsByApplicantId(applicantId)
+			);
+		}
+		catch(ErrorResponseException e){
+			return ResponseEntity.status(e.getStatusCode()).body(e.getMessage());
+		}
+		catch(Exception e){
+			return ResponseEntity.status(500).body("An unexpected error occurred: " + e.getMessage());
+		}
+	}
+
 }

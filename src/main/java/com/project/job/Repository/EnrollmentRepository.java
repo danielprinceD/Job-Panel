@@ -17,4 +17,6 @@ import com.project.job.pojo.Job;
 @Service
 public interface EnrollmentRepository extends JpaRepository<EnrollmentTable , Long>
 {
+	@Query("SELECT e FROM enrollment_table e WHERE e.applicants = :applicants")
+	public List<EnrollmentTable> findByApplicants(@Param("applicants") ApplicantTable applicants);
 }

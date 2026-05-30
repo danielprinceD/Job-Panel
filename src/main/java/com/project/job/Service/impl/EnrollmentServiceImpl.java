@@ -15,8 +15,12 @@ import com.project.job.Repository.ApplicantRepository;
 import com.project.job.Repository.EnrollmentRepository;
 import com.project.job.Repository.JobRepository;
 import com.project.job.Service.EntrollmentService;
+import com.project.job.dto.mapper.ApplicantEnrollmentMapper;
+import com.project.job.dto.mapper.ApplicantMapper;
 import com.project.job.dto.mapper.EnrollmentMapper;
 import com.project.job.dto.request.EnrollmentRequest;
+import com.project.job.dto.response.ApplicantEnrollmentResponse;
+import com.project.job.dto.response.ApplicantResponse;
 import com.project.job.dto.response.EnrollmentResponse;
 import com.project.job.pojo.ApplicantTable;
 import com.project.job.pojo.EnrollmentTable;
@@ -69,9 +73,17 @@ public class EnrollmentServiceImpl implements EntrollmentService
 		return List.of();
 	}
 
-	@Override public List<EnrollmentResponse> getAllEnrollmentsByApplicantId(Long applicantId)
+	@Override public ApplicantEnrollmentResponse getAllEnrollmentsByApplicantId(Long applicantId)
 	{
-		return List.of();
+		ApplicantTable applicantTable = applicantRepository.findById(applicantId).orElse(null);
+		if(applicantTable == null){
+			throw new ResponseStatusException(HttpStatus.BAD_REQUEST , "Applicant with id " + applicantId + " not found.");
+		}
+		ApplicantResponse applicantResponse = ApplicantMapper.toApplicantResponse(applicantTable);
+		List<EnrollmentResponse> enrollmentTable = enrollmentRepository.findByApplicants(applicantTable)
+			.stream().map(EnrollmentMapper::toEnrollmentResponse).toList();
+
+		return ApplicantEnrollmentMapper.toApplicantEnrollmentResponse(applicantResponse , enrollmentTable);
 	}
 
 	@Override public EnrollmentResponse deleteEnrollmentById(Long enrollmentId)
