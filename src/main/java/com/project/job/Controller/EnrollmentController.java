@@ -5,6 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.ErrorResponseException;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -33,6 +34,11 @@ public class EnrollmentController
 			return ResponseEntity.ok(
 				enrollmentResponse
 			);
+		}
+		catch(DataIntegrityViolationException e){
+			return ResponseEntity.badRequest().body(Map.of(
+				"error" , "Applicant with id " + applicantId + " is already enrolled to job with id " + jobId
+			));
 		}
 		catch(ResponseStatusException e){
 			return ResponseEntity.badRequest().body(Map.of(
