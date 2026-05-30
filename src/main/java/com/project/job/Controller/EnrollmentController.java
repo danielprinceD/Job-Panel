@@ -80,7 +80,33 @@ public class EnrollmentController
 			);
 		}
 		catch(ErrorResponseException e){
-			return ResponseEntity.status(e.getStatusCode()).body(e.getMessage());
+			return ResponseEntity.status(e.getStatusCode()).body(
+				Map.of(
+					"code" , e.getStatusCode().value(),
+					"error", e.getMessage()
+				)
+			);
+		}
+		catch(Exception e){
+			return ResponseEntity.status(500).body("An unexpected error occurred: " + e.getMessage());
+		}
+	}
+
+	@GetMapping("/enrolls/jobs/{job_id}")
+	public ResponseEntity<?> getAllEnrollmentsByJobId( @PathVariable("job_id") Long jobId)
+	{
+		try {
+			return ResponseEntity.ok(
+				entrollmentService.getAllEnrollmentsByJobId(jobId)
+			);
+		}
+		catch(ErrorResponseException e){
+			return ResponseEntity.status(e.getStatusCode()).body(
+				Map.of(
+					"code" , e.getStatusCode().value(),
+					"error", e.getMessage()
+				)
+			);
 		}
 		catch(Exception e){
 			return ResponseEntity.status(500).body("An unexpected error occurred: " + e.getMessage());

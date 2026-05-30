@@ -13,4 +13,6 @@ public interface JobRepository extends JpaRepository<Job , Long>
 {
 	@Query("SELECT j FROM Job j WHERE LOWER(j.jobTitle) LIKE LOWER(CONCAT('%' , :keyword ,  '%')) OR LOWER(j.jobDescription) LIKE LOWER(CONCAT('%' , :keyword ,  '%')) OR LOWER(j.location) LIKE LOWER(CONCAT('%' , :keyword ,  '%'))")
 	public List findByKeyword(String keyword);
+
+
 }

@@ -18,10 +18,14 @@ import com.project.job.Service.EntrollmentService;
 import com.project.job.dto.mapper.ApplicantEnrollmentMapper;
 import com.project.job.dto.mapper.ApplicantMapper;
 import com.project.job.dto.mapper.EnrollmentMapper;
+import com.project.job.dto.mapper.JobEntrollmentMapper;
+import com.project.job.dto.mapper.JobMapper;
 import com.project.job.dto.request.EnrollmentRequest;
 import com.project.job.dto.response.ApplicantEnrollmentResponse;
 import com.project.job.dto.response.ApplicantResponse;
 import com.project.job.dto.response.EnrollmentResponse;
+import com.project.job.dto.response.JobEnrollmentResponse;
+import com.project.job.dto.response.JobResponse;
 import com.project.job.pojo.ApplicantTable;
 import com.project.job.pojo.EnrollmentTable;
 import com.project.job.pojo.Job;
@@ -68,9 +72,16 @@ public class EnrollmentServiceImpl implements EntrollmentService
 		return EnrollmentMapper.toEnrollmentResponse(enrollmentTable);
 	}
 
-	@Override public List<EnrollmentResponse> getAllEnrollmentsByJobId(Long jobId)
+	@Override public JobEnrollmentResponse getAllEnrollmentsByJobId(Long jobId)
 	{
-		return List.of();
+		Job job = jobRepository.findById(jobId).orElseThrow(
+			()->new ResponseStatusException(HttpStatus.BAD_REQUEST , "Job with id " + jobId + " not found.")
+		);
+		JobResponse jobResponse = JobMapper.toJobResponse(job);
+		List<EnrollmentResponse> enrollmentResponse = enrollmentRepository.findByJobs(job)
+			.stream()
+			.map(EnrollmentMapper::toEnrollmentResponse).toList();
+		return JobEntrollmentMapper.toJobEnrollmentResponse(job , enrollmentResponse);
 	}
 
 	@Override public ApplicantEnrollmentResponse getAllEnrollmentsByApplicantId(Long applicantId)

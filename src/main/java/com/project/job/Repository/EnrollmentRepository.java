@@ -19,4 +19,8 @@ public interface EnrollmentRepository extends JpaRepository<EnrollmentTable , Lo
 {
 	@Query("SELECT e FROM enrollment_table e WHERE e.applicants = :applicants")
 	public List<EnrollmentTable> findByApplicants(@Param("applicants") ApplicantTable applicants);
+
+	@Query("SELECT e FROM enrollment_table e WHERE e.jobs = :jobs")
+	public List<EnrollmentTable> findByJobs(@Param("jobs") Job jobs);
+
 }
