@@ -110,7 +110,11 @@
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
+				<configuration>
+	                <mainClass>com.project.job.JobPortalMainApplication</mainClass>
+	            </configuration>
 			</plugin>
+
 		</plugins>
 	</build>
 
