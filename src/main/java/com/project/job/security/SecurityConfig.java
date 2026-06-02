@@ -54,14 +54,14 @@ public class SecurityConfig
 		return new BCryptPasswordEncoder();
 	}
 
-	@Bean
-	public UserDetailsService userDetailsService(){
-		UserDetails admin = User.withUsername("admin").password(passwordEncoder().encode("admin")).roles("ADMIN").build();
-		UserDetails user = User.withUsername("user").password(passwordEncoder().encode("user")).roles("USER").build();
-		UserDetailsManager userDetailsManager = new JdbcUserDetailsManager(dataSource);
-		userDetailsManager.createUser(admin);
-		userDetailsManager.createUser(user);
-
-		return userDetailsManager;
-	}
+//	@Bean
+//	public UserDetailsService userDetailsService(){
+//		UserDetails admin = User.withUsername("admin").password(passwordEncoder().encode("admin")).roles("ADMIN").build();
+//		UserDetails user = User.withUsername("user").password(passwordEncoder().encode("user")).roles("USER").build();
+//		UserDetailsManager userDetailsManager = new JdbcUserDetailsManager(dataSource);
+//		userDetailsManager.createUser(admin);
+//		userDetailsManager.createUser(user);
+//
+//		return userDetailsManager;
+//	}
 }
