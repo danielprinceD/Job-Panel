@@ -1,12 +1,11 @@
 package com.project.job.Controller;
 
-import tools.jackson.databind.ObjectMapper;
+import reactor.core.publisher.Flux;
 
-import java.io.File;
+import java.time.Duration;
 import java.util.List;
 import java.util.Map;
 
-import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -19,11 +18,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.multipart.MultipartRequest;
 import org.springframework.web.server.ResponseStatusException;
 
 import com.project.job.Service.JobService;
-import com.project.job.pojo.Job;
 
 @RequestMapping("/api/v1")
 @RestController
@@ -36,11 +33,11 @@ public class JobController
 		this.jobService = jobService;
 	}
 
-	@GetMapping("/jobs")
-	public ResponseEntity getAllJobDetails()
+	@GetMapping(value = "/jobs" , produces = MediaType.TEXT_EVENT_STREAM_VALUE )
+	public Flux getAllJobDetails()
 	{
 		List jobList = jobService.getAllJobs();
-		return ResponseEntity.ok(jobList);
+		return Flux.fromIterable(jobList).delaySequence(Duration.ofSeconds(2));
 	}
 
 	@GetMapping("/jobs/{jobId}")
@@ -88,15 +85,17 @@ public class JobController
 	}
 
 	@GetMapping("/search/jobs")
-	public ResponseEntity searchJobs( @RequestParam("text") String keyword)
+	public ResponseEntity<Flux<Map<String, String>>> searchJobs( @RequestParam("text") String keyword)
 	{
 		try{
 			List resultData = jobService.searchJobByTitle(keyword);
-			return ResponseEntity.ok(Map.of( "message" , "Data Fetched Successfully" , "data" , resultData ));
+			return ResponseEntity.ok(Flux.fromIterable(
+				resultData
+			));
 		}
 		catch(ResponseStatusException e)
 		{
-			return ResponseEntity.status(e.getStatusCode()).body(Map.of("message", e.getReason()));
+			return ResponseEntity.status(e.getStatusCode()).body(Flux.fromIterable( List.of(Map.of("message", e.getReason()) )));
 		}
 	}
 
