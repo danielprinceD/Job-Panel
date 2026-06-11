@@ -13,7 +13,7 @@ class Adder {
 	}
 	public int sub(int num)
 	{
-		synchronized(lock){
+		synchronized(this){
 			this.num -= num;
 			return this.num;
 		}
