@@ -19,7 +19,7 @@ class Book {
 }
 
 class ArchieveBook {
-	private static ArchieveBook instance;
+	private static volatile ArchieveBook instance;
 
 	private ArchieveBook(){
 
@@ -27,17 +27,18 @@ class ArchieveBook {
 
 	public static  ArchieveBook getInstance()
 	{
-		if(instance == null){
+		ArchieveBook localInstance = instance;
+		if(localInstance == null){
 			synchronized(ArchieveBook.class)
 			{
-				if(instance == null)
+				if(localInstance == null)
 				{
-					instance = new ArchieveBook();
+					localInstance = instance = new ArchieveBook();
 				}
 			}
 		}
 
-		return instance;
+		return localInstance;
 	}
 
 }
@@ -47,5 +48,6 @@ public class SingletonDesignExample
 	public static void main(String[] args)
 	{
 		ArchieveBook book = ArchieveBook.getInstance();
+		System.out.println(book.getClass().getName());
 	}
 }
