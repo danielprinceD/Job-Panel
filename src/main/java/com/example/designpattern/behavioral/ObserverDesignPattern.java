@@ -37,10 +37,7 @@ class NotificationService {
 
 	public void notify(String message)
 	{
-		for(NotifificationListener listener : listeners)
-		{
-			listener.notify(message);
-		}
+		listeners.forEach(listener -> listener.notify(message));
 	}
 
 }
