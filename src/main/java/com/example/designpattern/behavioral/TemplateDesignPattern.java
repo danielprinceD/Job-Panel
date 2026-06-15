@@ -8,7 +8,7 @@ abstract class BaseGameLoader {
 		System.out.println("Default Game Started");
 	}
 
-	public void loadGame(){
+	public final void loadGame(){
 		loadAssets();
 		initializeGame();
 		startGame();
@@ -30,6 +30,7 @@ class GodOfWarGameLoader extends BaseGameLoader {
 	{
 		System.out.println("Starting God of War Game");
 	}
+
 }
 
 class SpiderManGameLoader extends BaseGameLoader
@@ -60,4 +61,5 @@ public class TemplateDesignPattern
 		gameLoader = new SpiderManGameLoader();
 		gameLoader.loadGame();
 	}
+
 }
